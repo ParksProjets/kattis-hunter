@@ -1,0 +1,117 @@
+# Code generation
+
+
+## Wait for a given time (ms)
+
+TODO.
+
+```c++
+#include <chrono>
+
+
+void WaitForMs(int target)
+{
+    auto begin = std::chrono::high_resolution_clock::now();
+
+    while (true) {
+        auto end = std::chrono::high_resolution_clock::now();
+        auto dur = end - begin;
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
+        if (ms >= target)
+            exit(1);  // Cause a runtime error.
+    }
+}
+
+```
+
+
+## Get the number of birds in rounds
+
+TODO.
+
+| Parameter | Description               |
+|-----------|---------------------------|
+| `N`       | Target rounds (N and N+1) |
+
+```c++
+Action Player::shoot(const GameState &pState, const Deadline &pDue)
+{
+    if (pState.getRound() == N)
+        mCacheNumber = pState.getNumBirds();
+    if (pState.getRound() == (N+1))
+        WaitForMs(2 * (mCacheNumber + (20 * pState.getRound())));
+}
+```
+
+
+## Get species for each bird
+
+TODO.
+
+```c++
+void Player::reveal(const GameState &pState, const .. &pSpecies, ..)
+{
+    if (pState.getRound() == N) {
+        for (int i = I; i < J; i++) {
+            mCacheNumber += pSpecies[i] * mBaseShift;
+            mBaseShift *= 6;
+        }
+    }
+}
+```
+
+
+## Skip an entire environnement
+
+When you are targeting the second environnement you have to skip the first one.
+The quickest way to do that is to not shoot during the whole environnement or
+kill a Black Stork. But to achieve that you must know first in which
+environnement you currently are. For that, we hash the first directions of birds
+of the first round of each environnement.
+
+| Parameter | Description                        |
+|-----------|------------------------------------|
+| `E`       | Index of the current environnement |
+
+```c++
+// List of known env hashes.
+#define cEnvHashLen 1
+uint64_t cEnvHashes = { 0x456FA };
+
+
+Action Player::shoot(const GameState &pState, const Deadline &pDue)
+{
+    // Don't do anything before turn 2.
+    if (mTurnIndex++ < 2)
+        return cDontShoot;
+
+    // At turn 2 check if it's a known env. It's that's the case, setup skip
+    // variables.
+    if (mTurnIndex == 4)
+        setupEnvSkip(pState);
+
+    // ...
+}
+
+
+void Player::setupEnvSkip(const GameState &pState)
+{
+    // Calculate hash for this env.
+    uint64_t hash = pState.getNumBirds();
+    for (int i = 0; i < pState.getNumBirds(); i++)
+        hash += (pState.getBird(i).getObservation(2) << (i*4 + 5));
+
+    // Check if the hash is known.
+    int index = 0;
+    for (; index < cEnvHashLen; index++) {
+        if (cEnvHashes[index] == hash)
+            break;
+    }
+
+    // Hash was not found, env is not known (so it's the wanted one).
+    if (index == cEnvHashLen)
+        return;
+
+    // .. (TODO)
+}
+```
