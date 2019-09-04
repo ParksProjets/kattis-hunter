@@ -96,6 +96,7 @@ def submit_kattis(config: Dict, pid: Text, files: List[Text]):
     cookies = config["cache"]["cookies"]
 
     # Make the POST request.
+    logger.debug("Submitting %d files for '%s'.", len(files), pid)
     res = requests.post(url, data=data, files=files, headers=headers,
         cookies=cookies)
 
@@ -104,4 +105,6 @@ def submit_kattis(config: Dict, pid: Text, files: List[Text]):
     if not match:
         logger.critical("Can't find submission ID from URL '%s'.", res.url)
 
-    return match.group(1)
+    sid = match.group(1)
+    logger.debug("Files sent to submission %s.", sid)
+    return sid

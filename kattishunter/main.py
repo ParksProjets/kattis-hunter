@@ -14,7 +14,7 @@ from configparser import ConfigParser
 import logging
 from typing import Dict, Text
 
-from . import logger
+from .logger import set_looger_level
 from .cli import create_subparsers, call_subcmd
 
 logger = logging.getLogger(__name__)
@@ -45,23 +45,28 @@ def read_cache(filename: Text):
 def main():
     "Entry point of this script."
 
+    # Create CLI argument parser.
     parser = argparse.ArgumentParser(prog="kattishunter")
 
     parser.add_argument("--config", metavar="<file>", default="config.ini",
         help="configuration file to use (default=config.ini)")
     parser.add_argument("--cache", metavar="<file>", default="cache.json",
-        help="cache file to use, if existing (default=cache.json)")
+        help="cache file to read and write (default=cache.json)")
+
+    parser.add_argument("-v", "--verbose", action="store_true",
+        help="show debug messages")
 
     create_subparsers(parser)
-    args = parser.parse_args()
 
+    # Parse CLI arguments and set logging level.
+    args = parser.parse_args()
+    set_looger_level(("INFO", "DEBUG")[args.verbose])
+
+    # Read cache or config file if cache doesn't exist.
     if path.isfile(args.cache):
         config = read_cache(args.cache)
     else:
         config = read_config(args)
 
+    # Now execute the given sub-command.
     call_subcmd(args, config)
-
-
-if __name__ == "__main__":
-    main()

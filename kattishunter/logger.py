@@ -10,6 +10,7 @@ This project is under the MIT license.
 import os, sys
 import logging
 import ctypes
+from typing import Text
 
 
 # Check if we are on Windows.
@@ -70,7 +71,12 @@ class LogHandler(logging.Handler):
 
 
 # Bind the handler to the logger.
-logging.basicConfig(level=os.environ.get("LOGLEVEL", "INFO"))
-
 logging.getLogger().handlers = []
 logging.getLogger().addHandler(LogHandler())
+
+
+def set_looger_level(level: Text):
+    "Set logging level of the logger."
+
+    level = os.environ.get("LOGLEVEL") or level
+    logging.getLogger("kattishunter").setLevel(level)

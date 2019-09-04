@@ -18,7 +18,7 @@ from .codegen import codegen
 
 
 # Functions related to steps.
-STEPS_FUNCTIONS = {
+STEP_FUNCTIONS = {
     "number-birds": (number_birds_next, persist_number_birds),
     "species": (species_next, persist_species)
 }
@@ -64,18 +64,22 @@ def save_cache(config: Dict, cachefile: Text):
 def step(config: Dict, cachefile: Text, submit: Callable):
     "Execute one single step and persist data."
 
+    # First, initalize cache if its the first time we run the script.
     if "step" not in config:
         config["step"] = FIRST_STEP(config)
     if "results" not in config:
         setup_results(config)
 
+    # Retrieve the current step.
     (name, kargs) = config["step"]
-    (nextstep, persist) = STEPS_FUNCTIONS[name]
+    (nextstep, persist) = STEP_FUNCTIONS[name]
 
+    # Generate and submit new code for target step.
     with TemporaryDirectory() as tmpdir:
         codegen(tmpdir, name, kargs)
         (rtime, numok) = submit(config, find_files(tmpdir))
 
+    # Save data to cache and go to next step.
     persist(config, rtime, **kargs)
     config["step"] = nextstep(config, **kargs)
     save_cache(config, cachefile)

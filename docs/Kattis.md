@@ -3,8 +3,9 @@
 
 ## Getting information about a submission
 
-You can use the following link for getting information about a submission:
-> https://kth.kattis.com/submissions/{pid}?only_submission_row
+You can use the following link for getting information about a submission
+(parameter `{sid}` is the submission ID):
+> https://kth.kattis.com/submissions/{sid}?only_submission_row
 
 This link will return a JSON object (even if `Content-Type` is `text/html`),
 like the one below.

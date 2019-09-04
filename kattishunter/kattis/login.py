@@ -65,6 +65,7 @@ def login(config: Dict):
     cookies = config["cache"]["cookies"]
 
     # Make the POST request and store cookies.
+    logger.debug("Login to Kattis using '%s'.", config["user"]["email"])
     res = requests.post(url, data=data, headers=headers, cookies=cookies)
     config["cache"]["cookies"] = {**cookies, **res.cookies.get_dict()}
 

@@ -9,3 +9,4 @@ This project is under the MIT license.
 
 from .login import login
 from .submission import submit_kattis
+from .submit import submit
