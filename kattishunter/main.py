@@ -9,6 +9,7 @@ This project is under the MIT license.
 
 import sys, os.path as path
 import argparse
+import json
 from configparser import ConfigParser
 import logging
 from typing import Dict, Text
@@ -33,6 +34,14 @@ def read_config(args: argparse.Namespace) -> Dict:
 
 
 
+def read_cache(filename: Text):
+    "Read the cache file."
+
+    with open(filename) as file:
+        return json.load(file)
+
+
+
 def main():
     "Entry point of this script."
 
@@ -40,14 +49,16 @@ def main():
 
     parser.add_argument("--config", metavar="<file>", default="config.ini",
         help="configuration file to use (default=config.ini)")
-    parser.add_argument("--cache", metavar="<file>", default="cache.pickle",
-        help="cache file to use, if existing (default=cache.pickle)")
+    parser.add_argument("--cache", metavar="<file>", default="cache.json",
+        help="cache file to use, if existing (default=cache.json)")
 
     create_subparsers(parser)
     args = parser.parse_args()
 
-    # TODO: read cache file if existing.
-    config = read_config(args)
+    if path.isfile(args.cache):
+        config = read_cache(args.cache)
+    else:
+        config = read_config(args)
 
     call_subcmd(args, config)
 

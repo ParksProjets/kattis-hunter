@@ -14,7 +14,8 @@ from functools import partial
 from typing import Text, List, Dict, Any
 
 from .general import HEADERS, ATTRIBUTES, STATIC_CODE
-from .birds import get_num_birds
+from .birds import num_birds_shoot, species_guess, species_reveal
+from .envskip import envhash_shoot
 
 
 # All general sections that can be generated.
@@ -27,7 +28,17 @@ GENERAL_SECTIONS = {
 # Sections for all steps.
 STEP_SECTIONS = {
     "number-birds": {
-        "SHOOT": get_num_birds
+        "SHOOT": num_birds_shoot
+    },
+    "species": {
+        "GUESS": species_guess,
+        "REVEAL": species_reveal
+    },
+    "env-hash": {
+        "SHOOT": envhash_shoot
+    },
+    "directions": {
+        "SHOOT": num_birds_shoot
     }
 }
 

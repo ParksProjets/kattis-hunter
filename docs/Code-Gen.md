@@ -39,7 +39,7 @@ Action Player::shoot(const GameState &pState, const Deadline &pDue)
     if (pState.getRound() == N)
         mCacheNumber = pState.getNumBirds();
     if (pState.getRound() == (N+1))
-        WaitForMs(2 * (mCacheNumber + (20 * pState.getRound())));
+        WaitForMs(30 * (mCacheNumber + (20 * pState.getRound())));
 }
 ```
 
@@ -48,14 +48,30 @@ Action Player::shoot(const GameState &pState, const Deadline &pDue)
 
 TODO.
 
+| Parameter | Description             |
+|-----------|-------------------------|
+| `N`       | Target birds (N to N+3) |
+
 ```c++
+std::vector<ESpecies> Player::guess(const GameState &pState, const Deadline &pDue)
+{
+    std::vector<ESpecies> lGuesses(pState.getNumBirds(), SPECIES_PIGEON);
+    return lGuesses;
+}
+
+
 void Player::reveal(const GameState &pState, const .. &pSpecies, ..)
 {
-    if (pState.getRound() == N) {
-        for (int i = I; i < J; i++) {
+    for (int i = 0; i < pSpecies.size(); i++) {
+        mCacheIndex++;
+
+        if (mCacheIndex > N) {
             mCacheNumber += pSpecies[i] * mBaseShift;
             mBaseShift *= 6;
         }
+
+        if (mCacheIndex == (N+4))
+            WaitForMs(10 * mCacheNumber);
     }
 }
 ```

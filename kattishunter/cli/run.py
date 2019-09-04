@@ -21,11 +21,14 @@ def subparser(subparser: _SubParsersAction):
     parser: ArgumentParser = subparser.add_parser("run",
         description="Run the script nd find what we want.")
 
-    parser.add_argument("--tos", action="store_true",
-        help="use an user agent that complies with Terms of Service")
+    parser.add_argument("steps", metavar="<number>", type=int,
+        help="the number of steps to execute")
 
     parser.add_argument("--local", action="store_true",
         help="run the script with a local server")
+
+    parser.add_argument("--tos", action="store_true",
+        help="use an user agent that complies with Terms of Service")
 
 
 
@@ -39,8 +42,7 @@ def call(args: Namespace, config: Dict):
     user_agent = ("human", "tos")[args.tos]
     config["cache"]["user-agent"] = config["user-agent"][user_agent]
 
-    # TODO: many steps?
-
-    # Run one step.
+    # Run the given number of steps.
     submit = (submit_kattis, submit_local)[args.local]
-    step(config, submit)
+    for _ in range(args.steps):
+        step(config, args.cache, submit)

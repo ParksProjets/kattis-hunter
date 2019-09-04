@@ -8,7 +8,7 @@ This project is under the MIT license.
 """
 
 
-def get_num_birds(N: int, **kargs):
+def num_birds_shoot(N: int, **kargs):
     "Get the number of birds for round rindex and rindex+1."
 
     return f"""
@@ -17,3 +17,31 @@ def get_num_birds(N: int, **kargs):
         if (pState.getRound() == {N+1})
             WaitForMs(30 * (mCacheNumber + (20 * pState.getNumBirds())));
     """
+
+
+
+def species_guess(**kargs):
+    "Guess function for getting species."
+
+    return """
+        std::vector<ESpecies> lSGuesses(pState.getNumBirds(), SPECIES_PIGEON);
+        return lSGuesses;
+    """
+
+
+def species_reveal(N: int, **kargs):
+    "Reveal function for getting species."
+
+    return """
+        for (int i = 0; i < pSpecies.size(); i++) {
+            mCacheIndex++;
+
+            if (mCacheIndex > %s) {
+                mCacheNumber += pSpecies[i] * mBaseShift;
+                mBaseShift *= 6;
+            }
+
+            if (mCacheIndex == %s)
+                WaitForMs(40 * mCacheNumber);
+        }
+    """ % (N, N+3)

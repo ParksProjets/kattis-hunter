@@ -27,6 +27,7 @@ Action Player::shoot(const GameState &pState, const Deadline &pDue)
 
 std::vector<ESpecies> Player::guess(const GameState &pState, const Deadline &pDue)
 {
+    /*{GUESS_BEFORE}*/
     /*{GUESS}*/
 
     std::vector<ESpecies> lGuesses(pState.getNumBirds(), SPECIES_UNKNOWN);
@@ -43,6 +44,7 @@ void Player::hit(const GameState &pState, int pBird, const Deadline &pDue)
 
 void Player::reveal(const GameState &pState, const std::vector<ESpecies> &pSpecies, const Deadline &pDue)
 {
+    /*{REVEAL_BEFORE}*/
     /*{REVEAL}*/
 }
 

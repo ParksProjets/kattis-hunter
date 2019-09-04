@@ -21,6 +21,7 @@ ATTRIBUTES = """
 
 int mTurnIndex = 0;
 int mCacheNumber = 0;
+int mCacheIndex = 0;
 int mBaseShift = 1;
 
 """
