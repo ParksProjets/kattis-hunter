@@ -8,4 +8,4 @@ This project is under the MIT license.
 """
 
 from .login import login
-from .submit import submit
+from .submission import submit_kattis

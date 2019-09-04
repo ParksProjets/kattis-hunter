@@ -12,7 +12,6 @@ import re
 from typing import Dict
 import logging
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -67,7 +66,7 @@ def login(config: Dict):
 
     # Make the POST request and store cookies.
     res = requests.post(url, data=data, headers=headers, cookies=cookies)
-    config["cache"]["cookies"] = res.cookies.get_dict()
+    config["cache"]["cookies"] = {**cookies, **res.cookies.get_dict()}
 
     if "/users/" not in res.url:
         logger.critical("User credentials are not valid.")
