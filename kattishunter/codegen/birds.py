@@ -15,9 +15,9 @@ def num_birds_shoot(N: int, **kargs):
 
     return f"""
         if (pState.getRound() == {N})
-            mCacheNumber = pState.getNumBirds();
+            mCacheNumber = (pState.getNumBirds() - 1);
         if (pState.getRound() == {N+1})
-            WaitForMs(30 * (mCacheNumber + (20 * pState.getNumBirds())));
+            WaitForMs(30 * (mCacheNumber + (20 * (pState.getNumBirds() - 1))));
     """
 
 

@@ -11,12 +11,15 @@ import os, os.path as path
 import json
 from tempfile import TemporaryDirectory
 from typing import Text, Dict, Callable
+import logging
 
 from .steps import (number_birds, number_birds_next, species_next,
     directions_next)
 from .persist import (persist_number_birds, persist_species,
     persist_directions)
 from .codegen import codegen
+
+logger = logging.getLogger(__name__)
 
 
 # Functions related to steps.
@@ -72,6 +75,10 @@ def step(config: Dict, cachefile: Text, submit: Callable):
         config["step"] = FIRST_STEP(config)
     if "results" not in config:
         setup_results(config)
+
+    # If "step" is None, quit the script now.
+    if config["step"] is None:
+        logger.critical("No step to execute next, STOP.")
 
     # Retrieve the current step.
     (name, kargs) = config["step"]

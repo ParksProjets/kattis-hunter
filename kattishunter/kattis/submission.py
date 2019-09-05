@@ -37,6 +37,7 @@ def retreive_csrf_token(config: Dict, pid: Text, retry = True):
     cookies = config["cache"].get("cookies", {})
     res = requests.get(url, headers=headers, cookies=cookies,
         allow_redirects=False)
+    config["cache"]["cookies"] = {**cookies, **res.cookies.get_dict()}
 
     # Not logged, try to login first.
     if res.status_code != 200:
@@ -99,6 +100,7 @@ def submit_kattis(config: Dict, pid: Text, files: List[Text]):
     logger.debug("Submitting %d files for '%s'.", len(files), pid)
     res = requests.post(url, data=data, files=files, headers=headers,
         cookies=cookies)
+    config["cache"]["cookies"] = {**cookies, **res.cookies.get_dict()}
 
     # Find submisson ID.
     match = re.match(r"^.*/submissions/([0-9]+)$", res.url)

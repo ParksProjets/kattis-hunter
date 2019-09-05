@@ -20,21 +20,20 @@ from .cli import create_subparsers, call_subcmd
 logger = logging.getLogger(__name__)
 
 
-def read_config(args: argparse.Namespace) -> Dict:
+def read_config(filename: Text) -> Dict:
     "Read an parse configuration file."
 
-    if not path.isfile(args.config):
-        logger.critical("Can't read config file '%s'.", args.config)
+    if not path.isfile(filename):
+        logger.critical("Can't read config file '%s'.", filename)
 
     parser = ConfigParser()
-    parser.read(args.config)
+    parser.read(filename)
     config = {n: dict(parser[n]) for n in parser.sections()}
 
     return config
 
 
-
-def read_cache(filename: Text):
+def read_cache(filename: Text) -> Dict:
     "Read the cache file."
 
     with open(filename) as file:
@@ -66,7 +65,7 @@ def main():
     if path.isfile(args.cache):
         config = read_cache(args.cache)
     else:
-        config = read_config(args)
+        config = read_config(args.config)
 
     # Now execute the given sub-command.
     call_subcmd(args, config)

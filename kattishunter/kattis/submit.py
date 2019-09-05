@@ -38,6 +38,7 @@ def retrieve_kattis_result(config: Dict, sid: Text):
     cookies = config["cache"].get("cookies", {})
     res = requests.get(url, headers=headers, cookies=cookies,
         allow_redirects=False)
+    config["cache"]["cookies"] = {**cookies, **res.cookies.get_dict()}
 
     # Not logged, try to login first.
     if res.status_code != 200:
