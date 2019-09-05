@@ -14,7 +14,8 @@ from functools import partial
 from typing import Text, List, Dict, Any
 
 from .general import HEADERS, ATTRIBUTES, STATIC_CODE
-from .birds import num_birds_shoot, species_guess, species_reveal
+from .birds import (num_birds_shoot, species_guess, species_reveal,
+    directions_shoot)
 from .envskip import envhash_shoot
 
 
@@ -38,7 +39,7 @@ STEP_SECTIONS = {
         "SHOOT": envhash_shoot
     },
     "directions": {
-        "SHOOT": num_birds_shoot
+        "SHOOT": directions_shoot
     }
 }
 

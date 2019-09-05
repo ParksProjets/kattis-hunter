@@ -55,3 +55,11 @@ def persist_species(config: Dict, rtime: int, N: int, E: int):
     rounds = config["results"][E]["rounds"]
     values = decode_base(rtime / 4, 3, 6)
     write_slice(rounds, "species", values, N)
+
+
+def persist_directions(config: Dict, rtime: int, N: int, E: int):
+    "Persist bird directions."
+
+    rounds = config["results"][E]["rounds"]
+    values = decode_base(rtime / 2, 3, 9)
+    write_slice(rounds, "directions", values, N)

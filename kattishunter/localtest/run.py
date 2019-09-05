@@ -28,7 +28,7 @@ def setfd(fd: int, filename: Text, flag: int):
 
 
 
-def runexe(argv: List[Text], stdin: Text, stdout: Text, stderr="/dev/null"):
+def runexe(argv: List[Text], stdin: Text, stdout: Text):
     "Run the test executable."
 
     pid = os.fork()
@@ -36,7 +36,6 @@ def runexe(argv: List[Text], stdin: Text, stdout: Text, stderr="/dev/null"):
         try:
             setfd(0, stdin, os.O_RDONLY)
             setfd(1, stdout, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
-            # setfd(2, stderr, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
             os.execvp(argv[0], argv)
         except Exception as exc:
             os.kill(os.getpid(), signal.SIGTERM)
@@ -58,6 +57,8 @@ def runtest(infile: Text, exe: Text):
     exe = path.abspath(exe)
     pidserver = runexe([exe, "s", "l", infile], p2s_r, s2p_w)
     pidclient = runexe([exe], s2p_r, p2s_w)
+
+    # TODO: fix client when there is no runtime error.
 
     # Wait for the client and kill the server.
     (_, status, rusage) = os.wait4(pidclient, 0)

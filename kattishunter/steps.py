@@ -36,9 +36,27 @@ def species(config: Dict, E = 0):
 
 
 def species_next(config: Dict, N = 0, E = 0):
-    "Step for getting species of all birds of env."
+    "Get the step to execute next after getting species."
 
-    if N == 8:  # Go to step 2.
-        return None  # TODO.
+    env = config["results"][E]
+    if (N+3) >= env["num-birds"]:  # Go to step 3.
+        return directions(config, E)
     else:
         return ("species", dict(N = N+3, E = E))
+
+
+
+def directions(config: Dict, E = 0):
+    "Step for getting bird directions."
+
+    return ("directions", dict(N = 0, E = E))
+
+
+def directions_next(config: Dict, N = 0, E = 0):
+    "Get the step to execute next after getting directions."
+
+    env = config["results"][E]
+    if (N+3) >= env["num-birds"]:  # Go to step 4.
+        return None
+    else:
+        return ("directions", dict(N = N+3, E = E))

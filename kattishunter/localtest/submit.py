@@ -46,4 +46,5 @@ def submit(config: Dict, files: List[Text]):
         numok += 1
 
     sumrtime = round(sumrtime * 100)
+    logger.debug("Submission done (cpu=%s, numok=%s).", sumrtime, numok)
     return (sumrtime, numok)

@@ -9,6 +9,7 @@ This project is under the MIT license.
 
 import requests
 import re
+import time
 from typing import Dict
 import logging
 
@@ -71,3 +72,6 @@ def login(config: Dict):
 
     if "/users/" not in res.url:
         logger.critical("User credentials are not valid.")
+
+    # Save login time.
+    config["cache"]["login-time"] = time.time()

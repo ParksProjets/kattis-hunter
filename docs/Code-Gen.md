@@ -1,9 +1,11 @@
 # Code generation
 
-
 ## Wait for a given time (ms)
 
-TODO.
+As we use CPU time to retieve information from a Kattis execution, we have to
+make our program waiting for the right amount of time. We can't use the `sleep`
+function because it does not use CPU (the Linux kernel puts the process in sleep
+mode). This why we are using a busy waiting procedure.
 
 ```c++
 #include <chrono>
@@ -25,9 +27,12 @@ void WaitForMs(int target)
 ```
 
 
-## Get the number of birds in rounds
+## Get the number of birds in each round
 
-TODO.
+This is the first thing we need to do: knowing how many birds we have in each
+round. As there are between 1 and 20 birds per round we can encode two round at
+each execution (using a base 20 number). Finally we multiply the encoded number
+by 3 to reduce fluctuations of time.
 
 | Parameter | Description               |
 |-----------|---------------------------|
@@ -44,7 +49,7 @@ Action Player::shoot(const GameState &pState, const Deadline &pDue)
 ```
 
 
-## Get species for each bird
+## Get bird species
 
 TODO.
 
@@ -77,6 +82,20 @@ void Player::reveal(const GameState &pState, const .. &pSpecies, ..)
 ```
 
 
+## Get bird directions
+
+TODO.
+
+```c++
+Action Player::shoot(const GameState &pState, const Deadline &pDue)
+{
+    if (pState.getRound() == R && pState.getNumBirds() == N) {
+
+    }
+}
+```
+
+
 ## Skip an entire environnement
 
 When you are targeting the second environnement you have to skip the first one.
@@ -98,12 +117,12 @@ uint64_t cEnvHashes = { 0x456FA };
 Action Player::shoot(const GameState &pState, const Deadline &pDue)
 {
     // Don't do anything before turn 2.
-    if (mTurnIndex++ < 2)
+    if (mTurnIndex < 2)
         return cDontShoot;
 
     // At turn 2 check if it's a known env. It's that's the case, setup skip
     // variables.
-    if (mTurnIndex == 4)
+    if (pState.getRound() == 0 && mTurnIndex == 4)
         setupEnvSkip(pState);
 
     // ...

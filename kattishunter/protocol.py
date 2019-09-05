@@ -12,15 +12,18 @@ import json
 from tempfile import TemporaryDirectory
 from typing import Text, Dict, Callable
 
-from .steps import number_birds, number_birds_next, species_next
-from .persist import persist_number_birds, persist_species
+from .steps import (number_birds, number_birds_next, species_next,
+    directions_next)
+from .persist import (persist_number_birds, persist_species,
+    persist_directions)
 from .codegen import codegen
 
 
 # Functions related to steps.
 STEP_FUNCTIONS = {
     "number-birds": (number_birds_next, persist_number_birds),
-    "species": (species_next, persist_species)
+    "species": (species_next, persist_species),
+    "directions": (directions_next, persist_directions)
 }
 
 # First step to exexute.
@@ -76,7 +79,7 @@ def step(config: Dict, cachefile: Text, submit: Callable):
 
     # Generate and submit new code for target step.
     with TemporaryDirectory() as tmpdir:
-        codegen(tmpdir, name, kargs)
+        codegen(tmpdir, name, dict(**kargs, R=config["results"]))
         (rtime, numok) = submit(config, find_files(tmpdir))
 
     # Save data to cache and go to next step.

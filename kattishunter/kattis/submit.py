@@ -7,8 +7,8 @@ This project is under the MIT license.
 
 """
 
-import time
 import re
+import time
 import requests
 from typing import Dict, List, Text
 import logging
@@ -18,6 +18,9 @@ from .submission import HEADERS, submit_kattis
 
 logger = logging.getLogger(__name__)
 
+
+# Interval betwwen two logins (in s).
+LOGIN_INTERVAL = (6 * 3600)
 
 # Time between two checks (in s).
 CHECK_INTERVAL = 3
@@ -50,7 +53,7 @@ def retrieve_kattis_result(config: Dict, sid: Text):
     match = re.search(r"cpu\">([0-9]+\.[0-9]+)", result["component"])
     rtime = round(float(match.group(1)) * 100)
 
-    # Count number of success tests.
+    # Count number of successful tests.
     numok = result["testcases_number"]
     numok -= int("rejected\" title" in result["component"])
 
@@ -62,7 +65,9 @@ def submit(config: Dict, files: List[Text]):
     "Submit a test and return CPU time."
 
     # We logged too much time ago, log again now.
-    # TODO.
+    logintime = config["cache"].get("login-time", 0)
+    if time.time() - logintime > LOGIN_INTERVAL:
+        login(config)
 
     # Submit generated files to Kattis.
     pid = config["url"]["pid"]
