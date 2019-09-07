@@ -16,10 +16,12 @@ HEADERS = """
 """
 
 
-# TODO.
+# Player class attributes.
 ATTRIBUTES = """
 
-int mTurnIndex = 0;
+void setupEnvSkip(const GameState &pState);
+
+bool mSkipThisEnv = false;
 int mCacheNumber = 0;
 int mCacheIndex = 0;
 int mBaseShift = 1;
@@ -39,7 +41,7 @@ void WaitForMs(int target)
         auto dur = end - begin;
         auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(dur).count();
         if (ms >= target)
-            exit(1);  // Cause a runtime error.
+            exit(1);
     }
 }
 

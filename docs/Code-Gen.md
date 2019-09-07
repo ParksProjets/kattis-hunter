@@ -111,21 +111,18 @@ of the first round of each environnement.
 ```c++
 // List of known env hashes.
 #define cEnvHashLen 1
-uint64_t cEnvHashes = { 0x456FA };
+uint64_t cEnvHashes[cEnvHashLen] = { 71450663 };
 
 
 Action Player::shoot(const GameState &pState, const Deadline &pDue)
 {
-    // Don't do anything before turn 2.
-    if (mTurnIndex < 2)
-        return cDontShoot;
-
-    // At turn 2 check if it's a known env. It's that's the case, setup skip
-    // variables.
-    if (pState.getRound() == 0 && mTurnIndex == 4)
+    // Check if it's a known env. It's that's the case, setup skip variables.
+    if (pState.getRound() == 0 && pState.getBird(0).getSeqLength() == 1)
         setupEnvSkip(pState);
 
-    // ...
+    // We need to skip this env.
+    if (mSkipThisEnv)
+        return cDontShoot;
 }
 
 
@@ -134,7 +131,7 @@ void Player::setupEnvSkip(const GameState &pState)
     // Calculate hash for this env.
     uint64_t hash = pState.getNumBirds();
     for (int i = 0; i < pState.getNumBirds(); i++)
-        hash += (pState.getBird(i).getObservation(2) << (i*4 + 5));
+        hash += (pState.getBird(i).getObservation(0) << (i*4 + 5));
 
     // Check if the hash is known.
     int index = 0;
@@ -143,10 +140,8 @@ void Player::setupEnvSkip(const GameState &pState)
             break;
     }
 
-    // Hash was not found, env is not known (so it's the wanted one).
+    // Hash was found: env is known, we need to skip it.
     if (index == cEnvHashLen)
-        return;
-
-    // .. (TODO)
+        mSkipThisEnv = true;
 }
 ```

@@ -14,7 +14,7 @@ from configparser import ConfigParser
 import logging
 from typing import Dict, Text
 
-from .logger import set_looger_level
+from .logger import set_looger_level, set_logger_file
 from .cli import create_subparsers, call_subcmd
 
 logger = logging.getLogger(__name__)
@@ -54,12 +54,15 @@ def main():
 
     parser.add_argument("-v", "--verbose", action="store_true",
         help="show debug messages")
+    parser.add_argument("--log-file", metavar="<file>", default=None,
+        help="log file to use (default=STDOUT)")
 
     create_subparsers(parser)
 
     # Parse CLI arguments and set logging level.
     args = parser.parse_args()
     set_looger_level(("INFO", "DEBUG")[args.verbose])
+    set_logger_file(args.log_file)
 
     # Read cache or config file if cache doesn't exist.
     if path.isfile(args.cache):

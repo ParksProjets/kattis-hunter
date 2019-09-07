@@ -14,9 +14,9 @@ from typing import Text, Dict, Callable
 import logging
 
 from .steps import (number_birds, number_birds_next, species_next,
-    directions_next)
+    directions_next, envhash_next)
 from .persist import (persist_number_birds, persist_species,
-    persist_directions)
+    persist_directions, persist_envhash)
 from .codegen import codegen
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 STEP_FUNCTIONS = {
     "number-birds": (number_birds_next, persist_number_birds),
     "species": (species_next, persist_species),
-    "directions": (directions_next, persist_directions)
+    "directions": (directions_next, persist_directions),
+    "env-hash": (envhash_next, persist_envhash)
 }
 
 # First step to exexute.
@@ -48,6 +49,7 @@ def setup_results(config: Dict):
     EnvObj = [{
         "done": False,
         "num-birds": 0,
+        "hash": 0,
         "rounds": [{
             "num-birds": 0,
             "directions": None,

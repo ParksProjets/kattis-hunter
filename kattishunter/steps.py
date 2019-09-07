@@ -57,6 +57,27 @@ def directions_next(config: Dict, N = 0, E = 0):
 
     env = config["results"][E]
     if (N+3) >= env["num-birds"]:  # Go to step 4.
-        return None
+        return envhash(config, E)
     else:
         return ("directions", dict(N = N+3, E = E))
+
+
+
+def envhash(config: Dict, E = 0):
+    "Step for getting environment hash."
+
+    return ("env-hash", dict(N = 0, E = E))
+
+
+def envhash_next(config: Dict, N = 0, E = 0):
+    "Get the step to execute next after getting environment hash."
+
+    env = config["results"][E]
+    nenv = int(config["problem"]["number-of-env"])
+
+    if (N+2) < env["rounds"][0]["num-birds"]:
+        return ("env-hash", dict(N = N+2, E = E))
+    elif (E+1) < nenv:  # Go to step 1 of next env.
+        return number_birds(config, E = E+1)
+    else:  # Done!
+        return None

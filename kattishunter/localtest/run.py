@@ -58,8 +58,6 @@ def runtest(infile: Text, exe: Text):
     pidserver = runexe([exe, "s", "l", infile], p2s_r, s2p_w)
     pidclient = runexe([exe], s2p_r, p2s_w)
 
-    # TODO: fix client when there is no runtime error.
-
     # Wait for the client and kill the server.
     (_, status, rusage) = os.wait4(pidclient, 0)
     os.kill(pidserver, signal.SIGTERM)

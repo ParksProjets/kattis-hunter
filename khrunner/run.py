@@ -13,6 +13,8 @@ import subprocess as sp
 from typing import Dict
 import logging
 
+from .logger import handler as log_handler
+
 logger = logging.getLogger(__name__)
 
 
@@ -49,10 +51,15 @@ def runkh(config: Dict):
     if not path.isdir(rfolder):
         logger.critical("Kattis Hunter folder '%s' doesn't exist.", rfolder)
 
+    # Extra parameters to use when running Kattis Hunter.
+    extra = ["-v"]
+    if log_handler.file:
+        extra.append("--log-file=%s" % log_handler.file)
+
     # Run Kattis Hunter.
     os.chdir(rfolder)
-    ps = sp.Popen(["/usr/bin/python3", "kattishunter", "-v", "run", "1"])
-    logger.info("Kattis Hunter is running for a single step.")
+    ps = sp.Popen(["/usr/bin/python3", "kattishunter", *extra, "run", "1"])
+    logger.info("Kattis Hunter is running (%d-th time)." % (BACKUP_COUNTER + 1))
 
     try:
         ps.communicate(timeout=60)

@@ -16,30 +16,42 @@ from typing import Text, List, Dict, Any
 from .general import HEADERS, ATTRIBUTES, STATIC_CODE
 from .birds import (num_birds_shoot, species_guess, species_reveal,
     directions_shoot)
-from .envskip import envhash_shoot
+from .envskip import (envhash_shoot, envhash_static, ENVSKIP_STATIC,
+    ENVSKIP_SHOOT, ENVSKIP_GUESS, ENVSKIP_REVEAL)
 
 
 # All general sections that can be generated.
 GENERAL_SECTIONS = {
     "HEADERS": HEADERS,
     "ATTRIBUTES": ATTRIBUTES,
-    "STATIC_CODE": STATIC_CODE
+    "STATIC_CODE": STATIC_CODE,
+    "STATIC_CODE_ENVHASH": envhash_static,
+    "STATIC_CODE_SKIP": ENVSKIP_STATIC,
+    "SHOOT_SKIP": ENVSKIP_SHOOT,
+    "GUESS_SKIP": ENVSKIP_GUESS,
+    "REVEAL_SKIP": ENVSKIP_REVEAL
 }
 
 # Sections for all steps.
 STEP_SECTIONS = {
     "number-birds": {
-        "SHOOT": num_birds_shoot
+        "SHOOT": num_birds_shoot,
     },
     "species": {
         "GUESS": species_guess,
-        "REVEAL": species_reveal
+        "REVEAL": species_reveal,
     },
     "env-hash": {
-        "SHOOT": envhash_shoot
+        "SHOOT": envhash_shoot,
     },
     "directions": {
-        "SHOOT": directions_shoot
+        "SHOOT": directions_shoot,
+    },
+    "answer": {
+        "STATIC_CODE_SKIP": None,  # Don't use env skip in final code.
+        "SHOOT_SKIP": None,
+        "GUESS_SKIP": None,
+        "REVEAL_SKIP": None
     }
 }
 
@@ -57,12 +69,16 @@ def replace_section(stepsec: Dict, kargs: Dict, match):
 
     (name, indent) = (match.group(2), match.group(1))
 
-    section = stepsec.get(name) or GENERAL_SECTIONS.get(name)
+    if name in stepsec:
+        section = stepsec.get(name)
+    else:
+        section = GENERAL_SECTIONS.get(name)
+
+    if section and not isinstance(section, str):
+        section = section(**kargs)
+
     if section is None:
         return ""  # Section not found, delete the header.
-
-    if not isinstance(section, str):
-        section = section(**kargs)
 
     section = textwrap.dedent(section).strip()
     return textwrap.indent(section, indent) + "\n"

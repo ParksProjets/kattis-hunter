@@ -8,43 +8,43 @@ namespace ducks
 
 /*{STATIC_CODE}*/
 
+/*{STATIC_CODE_ENVHASH}*/
+
+/*{STATIC_CODE_SKIP}*/
+
 Player::Player()
 {
 }
 
 Action Player::shoot(const GameState &pState, const Deadline &pDue)
 {
-    /*{SHOOT_BEFORE}*/
+    /*{SHOOT_SKIP}*/
+
     /*{SHOOT}*/
 
-
-    // This line choose not to shoot
     return cDontShoot;
-
-    //This line would predict that bird 0 will move right and shoot at it
-    //return Action(0, MOVE_RIGHT);
 }
 
 std::vector<ESpecies> Player::guess(const GameState &pState, const Deadline &pDue)
 {
-    /*{GUESS_BEFORE}*/
+    std::vector<ESpecies> lGuesses(pState.getNumBirds(), SPECIES_UNKNOWN);
+
+    /*{GUESS_SKIP}*/
+
     /*{GUESS}*/
 
-    std::vector<ESpecies> lGuesses(pState.getNumBirds(), SPECIES_UNKNOWN);
     return lGuesses;
 }
 
 void Player::hit(const GameState &pState, int pBird, const Deadline &pDue)
 {
-    /*
-     * If you hit the bird you are trying to shoot, you will be notified through this function.
-     */
-    std::cerr << "HIT BIRD!!!" << std::endl;
+    /*{HIT}*/
 }
 
 void Player::reveal(const GameState &pState, const std::vector<ESpecies> &pSpecies, const Deadline &pDue)
 {
-    /*{REVEAL_BEFORE}*/
+    /*{REVEAL_SKIP}*/
+
     /*{REVEAL}*/
 }
 

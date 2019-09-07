@@ -43,6 +43,7 @@ def submit(config: Dict, files: List[Text]):
 
         if status != 0:
             break  # We got a runtime error.
+        sumrtime -= 0.01
         numok += 1
 
     sumrtime = round(sumrtime * 100)
