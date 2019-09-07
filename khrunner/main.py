@@ -13,7 +13,7 @@ import json
 from typing import Text, Dict
 import logging
 
-from .logger import set_looger_level
+from .logger import set_looger_level, set_logger_file
 from .intervals import decode_intervals, wait_interval
 from .run import runkh, backup_cache
 
@@ -54,10 +54,13 @@ def main():
 
     parser.add_argument("-v", "--verbose", action="store_true",
         help="show debug messages")
+    parser.add_argument("--log-file", metavar="<file>", default=None,
+        help="log file to use (default=STDOUT)")
 
     # Parse CLI arguments and set logging level.
     args = parser.parse_args()
     set_looger_level(("INFO", "DEBUG")[args.verbose])
+    set_logger_file(args.log_file)
 
     # Read configuration file and loop indefinitely.
     config = read_config(args.config)

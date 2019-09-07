@@ -6,7 +6,7 @@ After=network-online.target
 [Service]
 
 # Start information.
-ExecStart=/usr/bin/python3 khrunner
+ExecStart=/usr/bin/python3 khrunner --log-file=/root/khrunner.log
 WorkingDirectory=/root/kattis-hunter
 
 # Restart information.
@@ -25,7 +25,7 @@ Group=root
 # Ouput messages to systemlog.
 StandardOutput=syslog
 StandardError=syslog
-SyslogIdentifier=root
+SyslogIdentifier=khrunner
 
 
 [Install]

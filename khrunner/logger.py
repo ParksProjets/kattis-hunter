@@ -34,6 +34,11 @@ COLORS = {  # (ansi, win32)
 class LogHandler(logging.Handler):
     "Overwrite Python logger for a more beautiful one."
 
+    def __init__(self, level=logging.NOTSET):
+        super().__init__(level)
+        self.file = None
+
+
     def colorize(self, color, stream):
         "Colorize the console."
 
@@ -58,7 +63,9 @@ class LogHandler(logging.Handler):
     def emit(self, record):
         "Called when we need to output a log to the console."
 
-        if record.levelname in ("CRITICAL", "ERROR", "WARNING"):
+        if self.file:
+            stream = open(self.file, "a+")
+        elif record.levelname in ("CRITICAL", "ERROR", "WARNING"):
             stream = sys.stderr
         else:
             stream = sys.stdout
@@ -68,11 +75,14 @@ class LogHandler(logging.Handler):
         if record.levelname == "CRITICAL":  # Stop the script on critical error.
             logging.shutdown()
             sys.exit(1)
+        elif self.file:
+            stream.close()
 
 
 # Bind the handler to the logger.
+handler = LogHandler()
 logging.getLogger().handlers = []
-logging.getLogger().addHandler(LogHandler())
+logging.getLogger().addHandler(handler)
 
 
 def set_looger_level(level: Text):
@@ -80,3 +90,9 @@ def set_looger_level(level: Text):
 
     level = os.environ.get("LOGLEVEL") or level
     logging.getLogger("khrunner").setLevel(level)
+
+
+def set_logger_file(filename: Text):
+    "Set the log file."
+
+    handler.file = filename
