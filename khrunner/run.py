@@ -51,7 +51,7 @@ def runkh(config: Dict):
 
     # Run Kattis Hunter.
     os.chdir(rfolder)
-    ps = sp.Popen(["/usr/bin/python3", "kattishunter", "--cache", "cache-local.json", "-v", "run", "1", "--local"])
+    ps = sp.Popen(["/usr/bin/python3", "kattishunter", "-v", "run", "1"])
     logger.info("Kattis Hunter is running for a single step.")
 
     try:
