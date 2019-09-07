@@ -20,10 +20,10 @@ like the one below.
 
 Key `status_id` will be one of the following values:
 
-| Status ID | Description    |
-|:---------:|----------------|
-|     0     | New            |
-|     3     | Compiling      |
-|     5     | Running        |
-|     8     | Accepted       |
-|     9     | Run Time Error |
+| Status ID | Description               |
+|:---------:|---------------------------|
+|     0     | New                       |
+|     3     | Compiling                 |
+|     5     | Running                   |
+|     8     | Accepted or Compile Error |
+|     9     | Run Time Error            |

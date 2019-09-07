@@ -50,6 +50,10 @@ def retrieve_kattis_result(config: Dict, sid: Text):
     if result["status_id"] < 6:
         return None  # Running or compiling.
 
+    # Make sure we didn't got "Compile Error".
+    if "Compile Error" in result["component"]:
+        logger.critical("Submission got 'Compile Error'.")
+
     # Retrieve CPU time.
     match = re.search(r"cpu\">([0-9]+\.[0-9]+)", result["component"])
     rtime = round(float(match.group(1)) * 100)
