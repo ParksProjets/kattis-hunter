@@ -79,4 +79,4 @@ def set_looger_level(level: Text):
     "Set logging level of the logger."
 
     level = os.environ.get("LOGLEVEL") or level
-    logging.getLogger("kattishunter").setLevel(level)
+    logging.getLogger("khrunner").setLevel(level)

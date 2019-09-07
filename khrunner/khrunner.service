@@ -1,0 +1,32 @@
+[Unit]
+Description=Kattis Hunter runner
+After=network-online.target
+
+
+[Service]
+
+# Start information.
+ExecStart=/usr/bin/python3 khrunner
+WorkingDirectory=/root/kattis-hunter
+
+# Restart information.
+Restart=always
+RestartSec=15
+TimeoutStopSec=60s
+TimeoutStartSec=5s
+StartLimitInterval=120s
+StartLimitBurst=15
+KillSignal=SIGTERM
+
+# Use "root" user and group.
+User=root
+Group=root
+
+# Ouput messages to systemlog.
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=root
+
+
+[Install]
+WantedBy=multi-user.target
