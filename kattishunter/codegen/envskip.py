@@ -14,11 +14,13 @@ def envhash_static(R: List, **kargs):
     "Static code for that contains env hash."
 
     L = sum(int(e["done"]) for e in R)
-    if L == 0: return None
-
     result = "#define cEnvHashLen %d" % L
-    hashes = ", ".join(str(e["hash"]) for e, _ in zip(R, range(L)))
-    result += "\nuint64_t cEnvHashes[cEnvHashLen] = { %s };" % hashes
+
+    if L != 0:
+        hashes = ", ".join(str(e["hash"]) for e, _ in zip(R, range(L)))
+        result += "\nuint64_t cEnvHashes[cEnvHashLen] = { %s };" % hashes
+    else:
+        result += "\nuint64_t cEnvHashes[1] = { 0 };"
 
     return result
 
