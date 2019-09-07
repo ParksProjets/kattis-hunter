@@ -3,13 +3,17 @@
     "backup-dir": "/root/kh-backups",
 
     "intervals": [{
+        "from": "8h00",
+        "to": "9h00",
+        "interval": "0h12"
+    }, {
         "from": "9h00",
         "to": "12h00",
-        "interval": "0h45"
+        "interval": "0h28"
     }, {
         "from": "12h00",
         "to": "14h00",
-        "interval": "1h12"
+        "interval": "0h37"
     }, {
         "from": "14h00",
         "to": "17h00",
@@ -17,22 +21,22 @@
     }, {
         "from": "17h00",
         "to": "17h25",
-        "interval": "0h2"
+        "interval": "0h04"
     }, {
-        "from": "17h20",
+        "from": "17h25",
         "to": "19h13",
         "interval": "0h15"
     }, {
         "from": "19h13",
         "to": "19h38",
-        "interval": "0h3"
+        "interval": "0h06"
     }, {
         "from": "19h38",
         "to": "21h12",
-        "interval": "0h37"
+        "interval": "0h23"
     }, {
         "from": "21h12",
-        "to": "23h23",
-        "interval": "0h26"
+        "to": "23h43",
+        "interval": "0h17"
     }]
 }

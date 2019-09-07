@@ -10,6 +10,7 @@ This project is under the MIT license.
 import os, sys
 import logging
 import ctypes
+import time
 from typing import Text
 
 
@@ -55,8 +56,11 @@ class LogHandler(logging.Handler):
     def print(self, record, stream):
         "Print a record to the console."
 
+        strtime = time.strftime("%Y/%m/%d %H:%M:%S")
+        args = (strtime, record.levelname, self.format(record))
+
         self.colorize(record.levelname, stream)
-        print("%s - %s" % (record.levelname, self.format(record)), file=stream)
+        print("[%s] %s - %s" % args, file=stream)
         self.colorize("RESET", stream)
 
 
