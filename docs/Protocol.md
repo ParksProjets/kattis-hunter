@@ -17,10 +17,6 @@ for i in range(number_of_env):
     for j in range(0, NUM_ROUNDS, 2):
         get("number of birds of round j and j+1")
 
-    # Retrieve the first directions of the birds from the first round. We do
-    # that for knowing in which env we currently are.
-    get("directions of first birds")
-
     # Get species of each bird.
     for k in range(0, NUM_ROUNDS * NUM_BIRDS_ENV, 4):
         get("species of birds k, k+1, k+2 and k+3")
@@ -28,6 +24,10 @@ for i in range(number_of_env):
     # Finally retrieve the directions of each bird.
     for k in range(0, NUM_ROUNDS * NUM_BIRDS_ENV, 3):
         get("directions of birds k, k+1 and k+2")
+
+    # Retrieve the first directions of the birds from the first round. We do
+    # that for knowing in which env we currently are.
+    get("directions of first birds")
 ```
 
 

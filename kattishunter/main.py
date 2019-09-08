@@ -11,8 +11,8 @@ import sys, os.path as path
 import argparse
 import json
 from configparser import ConfigParser
-import logging
 from typing import Dict, Text
+import logging
 
 from .logger import set_looger_level, set_logger_file
 from .cli import create_subparsers, call_subcmd

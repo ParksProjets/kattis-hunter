@@ -18,6 +18,8 @@ from .birds import (num_birds_shoot, species_guess, species_reveal,
     directions_shoot)
 from .envskip import (envhash_shoot, envhash_static, ENVSKIP_STATIC,
     ENVSKIP_SHOOT, ENVSKIP_GUESS, ENVSKIP_REVEAL)
+from .answer import (ANSWER_ATTRIBUTES, ANSWER_STATIC, ANSWER_SHOOT, ANSWER_HIT,
+    ANSWER_GUESS, ANSWER_REVEAL, answer_static)
 
 
 # All general sections that can be generated.
@@ -48,10 +50,13 @@ STEP_SECTIONS = {
         "SHOOT": directions_shoot,
     },
     "answer": {
-        "STATIC_CODE_SKIP": None,  # Don't use env skip in final code.
-        "SHOOT_SKIP": None,
-        "GUESS_SKIP": None,
-        "REVEAL_SKIP": None
+        "STATIC_CODE_SKIP": ANSWER_STATIC,  # Don't use env skip in final code.
+        "SHOOT_SKIP": ANSWER_SHOOT,
+        "GUESS_SKIP": ANSWER_GUESS,
+        "REVEAL_SKIP": ANSWER_REVEAL,
+        "STATIC_CODE": answer_static,
+        "HIT": ANSWER_HIT,
+        "ATTRIBUTES": ANSWER_ATTRIBUTES
     }
 }
 

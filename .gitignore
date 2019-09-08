@@ -4,3 +4,7 @@ __pycache__/
 # Ignore cache files.
 /cache.json
 /cache-local.json
+
+# Ignore generated answer.
+/Player.cpp
+/Player.hpp

@@ -45,7 +45,7 @@ def persist_number_birds(config: Dict, rtime: int, N: int, E: int):
     "Persist data received for the number of birds."
 
     rounds = config["results"][E]["rounds"]
-    values = decode_base(rtime // 3, 2, 20)
+    values = decode_base(rtime // 4, 2, 20)
 
     rounds[N]["num-birds"] = values[0] + 1
     rounds[N+1]["num-birds"] = values[1] + 1

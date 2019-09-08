@@ -12,13 +12,15 @@ from typing import Dict
 import logging
 
 from .run import subparser as sp_run, call as call_run
+from .answer import subparser as sp_answer, call as call_answer
 
 logger = logging.getLogger(__name__)
 
 
 # All available sub-commands.
 SUB_COMMANDS = {
-    "run": (sp_run, call_run)
+    "run": (sp_run, call_run),
+    "answer": (sp_answer, call_answer)
 }
 
 
