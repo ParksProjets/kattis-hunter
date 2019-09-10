@@ -87,8 +87,8 @@ ANSWER_REVEAL = """
 
 
 
-def gen_bird_array(envs: List, name: Text, etype: Text):
-    "Generate a static array for birds."
+def gen_bird_array(envs: List, name: Text):
+    "Generate a static array for bird directions / species."
 
     upper = name.capitalize()
     result = "using Env%s = std::vector<int>[10];\n" % (upper)
@@ -110,8 +110,8 @@ def gen_bird_array(envs: List, name: Text, etype: Text):
 def answer_static(R: List, Scores: List, **kargs):
     "Static code for the final code."
 
-    result = gen_bird_array(R, "directions", "EMovement") + "\n"
-    result += gen_bird_array(R, "species", "ESpecies") + "\n"
+    result = gen_bird_array(R, "directions") + "\n"
+    result += gen_bird_array(R, "species") + "\n"
 
     result += "int kTargetScores[%s] = { " % len(R)
     result += ", ".join(map(str, Scores)) + " };\n"
