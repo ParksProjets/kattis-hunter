@@ -50,8 +50,14 @@ def call(args: Namespace, config: Dict):
     print("\nNumber of environments: %d" % len(envs))
 
     for i, e in enumerate(envs):
-        print("\nEnvirnoment %d:" % i)
+        print("\nEnvirnoment %d:" % (i+1))
         print("   Done: %s" % ("no", "yes")[e["done"]])
+
+        if "same-as" in e:
+            same_as = e["same-as"]
+            print(f"   This env is the same as {same_as+1}")
+            continue
+
         print("   Number of birds: %d" % e["num-birds"])
         print("   Hash: %d" % e.get("hash", 0))
 

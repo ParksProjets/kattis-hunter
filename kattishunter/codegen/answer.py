@@ -27,8 +27,8 @@ ANSWER_STATIC = """
 void Player::findEnvironmentIndex(const GameState &pState)
 {
     uint64_t hash = pState.getNumBirds();
-    for (size_t i = 0; i < pState.getNumBirds(); i++)
-        hash += (pState.getBird(i).getObservation(0) << (i*4 + 5));
+    for (size_t i = 0; i < std::min((int)pState.getNumBirds(), 14); i++)
+        hash += ((uint64_t)pState.getBird(i).getObservation(0) << (i*4 + 5));
 
     for (; mEnvIndex < cEnvHashLen; mEnvIndex++) {
         if (cEnvHashes[mEnvIndex] == hash)
@@ -44,7 +44,7 @@ ANSWER_SHOOT = """
     if (pState.getRound() == 0 && turn == 1)
         findEnvironmentIndex(pState);
 
-    if (mEnvIndex == cEnvHashLen || mCurrentScore >= kTargetScores[mEnvIndex])
+    if (!kShootEnabled || mEnvIndex == cEnvHashLen || mCurrentScore >= kTargetScores[mEnvIndex])
         return cDontShoot;
 
     auto &dirs = kAllDirections[mEnvIndex][pState.getRound()];
@@ -65,7 +65,7 @@ ANSWER_HIT = """
 # Guess function content.
 ANSWER_GUESS = """
     mGuesses = std::vector<ESpecies>(pState.getNumBirds(), SPECIES_UNKNOWN);
-    if (mEnvIndex == cEnvHashLen)
+    if (!kGuessEnabled || mEnvIndex == cEnvHashLen)
         return mGuesses;
 
     auto &species = kAllSpecies[mEnvIndex][pState.getRound()];
@@ -91,11 +91,15 @@ def gen_bird_array(envs: List, name: Text):
     "Generate a static array for bird directions / species."
 
     upper = name.capitalize()
+    count = sum(int("same-as" not in e) for e in envs)
+
     result = "using Env%s = std::vector<int>[10];\n" % (upper)
-    result += "Env%s kAll%s[%d] = {\n" % (upper, upper, len(envs))
+    result += "Env%s kAll%s[%d] = {\n" % (upper, upper, count)
 
     for i, e in enumerate(envs):
+        if e.get("same-as"): continue
         result += " " * 4 + "{  // Environment %d.\n" % (i+1)
+
         for r in e["rounds"]:
             if r[name]:
                 result += " " * 8 + "{ " + ", ".join(map(str, r[name])) + " },\n"
@@ -107,13 +111,16 @@ def gen_bird_array(envs: List, name: Text):
     return result
 
 
-def answer_static(R: List, Scores: List, **kargs):
+def answer_static(R: List, Scores: List, Se: bool, Ge: bool, **kargs):
     "Static code for the final code."
 
-    result = gen_bird_array(R, "directions") + "\n"
+    result = "constexpr bool kShootEnabled = %s;\n" % ("false", "true")[Se]
+    result += "constexpr bool kGuessEnabled = %s;\n\n" % ("false", "true")[Ge]
+
+    result += gen_bird_array(R, "directions") + "\n"
     result += gen_bird_array(R, "species") + "\n"
 
-    result += "int kTargetScores[%s] = { " % len(R)
+    result += "int kTargetScores[%s] = { " % len(Scores)
     result += ", ".join(map(str, Scores)) + " };\n"
 
     return result

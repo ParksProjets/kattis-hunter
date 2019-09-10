@@ -13,11 +13,12 @@ from typing import List
 def envhash_static(R: List, **kargs):
     "Static code for that contains env hash."
 
-    L = sum(int(e["done"]) for e in R)
+    envs = list(filter(lambda e: "same-as" not in e, R))
+    L = sum(int(e["done"]) for e in envs)
     result = "#define cEnvHashLen %d" % L
 
     if L != 0:
-        hashes = ", ".join(str(e["hash"]) for e, _ in zip(R, range(L)))
+        hashes = ", ".join(str(e["hash"]) for e, _ in zip(envs, range(L)))
         result += "\nuint64_t cEnvHashes[cEnvHashLen] = { %s };" % hashes
     else:
         result += "\nuint64_t cEnvHashes[1] = { 0 };"
