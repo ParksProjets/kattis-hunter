@@ -75,7 +75,7 @@ def envhash_next(config: Dict, N = 0, E = 0):
     env = config["results"][E]
     nenv = int(config["problem"]["number-of-env"])
 
-    if (N+2) < env["rounds"][0]["num-birds"]:
+    if (N+2) < min(env["rounds"][0]["num-birds"], 14):
         return ("env-hash", dict(N = N+2, E = E))
     elif (E+1) < nenv:  # Go to step 1 of next env.
         return number_birds(config, E = E+1)

@@ -78,5 +78,5 @@ def persist_envhash(config: Dict, rtime: int, N: int, E: int):
     for i, v in enumerate(values):
         env["hash"] += v << ((i+N) * 4 + 5)
 
-    if (N+2) >= env["rounds"][0]["num-birds"]:
+    if (N+2) >= min(env["rounds"][0]["num-birds"], 14):
         env["done"] = True

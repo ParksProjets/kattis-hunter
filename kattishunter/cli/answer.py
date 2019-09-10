@@ -58,5 +58,5 @@ def call(args: Namespace, config: Dict):
     scores = parse_scores(args.scores, config)
     kargs = dict(R = config["results"], Scores = scores)
 
-    # Now generate the code..
+    # Now generate the code.
     codegen(args.output, "answer", kargs)

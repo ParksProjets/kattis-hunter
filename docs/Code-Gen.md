@@ -130,8 +130,8 @@ void Player::setupEnvSkip(const GameState &pState)
 {
     // Calculate hash for this env.
     uint64_t hash = pState.getNumBirds();
-    for (int i = 0; i < pState.getNumBirds(); i++)
-        hash += (pState.getBird(i).getObservation(0) << (i*4 + 5));
+    for (int i = 0; i < std::min((int)pState.getNumBirds(), 14); i++)
+        hash += ((uint64_t)pState.getBird(i).getObservation(0) << (i*4 + 5));
 
     // Check if the hash is known.
     int index = 0;

@@ -28,7 +28,7 @@ def envhash_static(R: List, **kargs):
 def envhash_shoot(N: int, E: int, R: List, **kargs):
     "Shoot function for generating env hash."
 
-    Nmax = min(N+2, R[E]["rounds"][0]["num-birds"])
+    Nmax = min(N+2, R[E]["rounds"][0]["num-birds"], 14)
     content = [
         "mCacheNumber += pState.getBird(%s).getObservation(0) * %s;" % (
             i, 9 ** (i-N)) for i in range(N, Nmax)
@@ -47,8 +47,8 @@ ENVSKIP_STATIC = """
 void Player::setupEnvSkip(const GameState &pState)
 {
     uint64_t hash = pState.getNumBirds();
-    for (int i = 0; i < pState.getNumBirds(); i++)
-        hash += (pState.getBird(i).getObservation(0) << (i*4 + 5));
+    for (int i = 0; i < std::min((int)pState.getNumBirds(), 14); i++)
+        hash += ((uint64_t)pState.getBird(i).getObservation(0) << (i*4 + 5));
 
     int index = 0;
     for (; index < cEnvHashLen; index++) {
