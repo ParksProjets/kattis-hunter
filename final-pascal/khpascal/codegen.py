@@ -13,18 +13,23 @@ import textwrap
 from functools import partial
 from typing import Text, List, Dict, Any
 
+from .sections import gen_directions, gen_species, gen_hashes, gen_target_scores
+
 
 # Sections to replace.
 SECTIONS = {
-    "HASHES": 
+    "TARGET SCORES": gen_target_scores,
+    "HASHES": gen_hashes,
+    "DIRECTIONS": gen_directions,
+    "SPECIES": gen_species
 }
 
 
 # Regex for replacing sections.
-RE_SECTION = re.compile(r"^( *)/\*{([A-Z _-]+)}\*/ *\n", re.M)
+RE_SECTION = re.compile(r"^( *){\(([A-Z _-]+)\)} *\n", re.M)
 
 
-def replace_section(stepsec: Dict, kargs: Dict, match):
+def replace_section(kargs: Dict, match):
     "Function that replace a section header by its contents."
 
     (name, indent) = (match.group(2), match.group(1))
@@ -40,27 +45,14 @@ def replace_section(stepsec: Dict, kargs: Dict, match):
 
 
 
-def gen_source(infile: Text, outfile: Text, stepsec: Dict, kargs: Dict):
+def codegen(infile: Text, outfile: Text, kargs: Dict):
     "Generate a single source file."
 
     with open(infile) as file:
         content = file.read()
 
-    subfunc = partial(replace_section, stepsec, kargs)
+    subfunc = partial(replace_section, kargs)
     content = RE_SECTION.sub(subfunc, content)
 
     with open(outfile, "w") as file:
         file.write(content)
-
-
-
-def codegen(outdir: Text, step: Text, kargs: Dict):
-    "Generate source files for the given step."
-
-    assets = path.join(path.dirname(__file__), "..", "assets")
-    stepsec = STEP_SECTIONS[step]
-
-    for source in SOURCES:
-        infile = path.join(assets, source)
-        outfile = path.join(outdir, source)
-        gen_source(infile, outfile, stepsec, kargs)

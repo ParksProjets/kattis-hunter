@@ -12,10 +12,17 @@ FPC := fpc
 # COBOL configuration.
 PFLAGS += -O2 -XS -Xt
 
-# TODO.
-BASE := base.pas
+# Object directory and target executable.
 OBJDIR := objects
 TARGET := answer
+
+# Base source file and temporary source file.
+BASESRC := base.pas
+TMPSRC := finalcode.pas
+
+# Cache file to use and target scores.
+CACHE := ../cache.json
+SCORES := 23,10,0,0,0,0
 
 
 # Compile all source files.
@@ -23,9 +30,13 @@ TARGET := answer
 all: $(OBJDIR)/$(TARGET)
 
 
-# Build final COBOL executable.
-$(OBJDIR)/$(TARGET): $(BASE)
+# Build the temporary source file.
+$(OBJDIR)/$(TMPSRC): $(BASESRC)
 	@mkdir -p $(OBJDIR)
+	$(PYTHON) khpascal $(SCORES) -c $(CACHE) -i $< -o $@
+
+# Build final COBOL executable.
+$(OBJDIR)/$(TARGET): $(OBJDIR)/$(TMPSRC)
 	$(FPC) -o$@ $(CFLAGS) $<
 
 

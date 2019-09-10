@@ -115,7 +115,7 @@ void Player::reveal(const GameState &pState, const .. &pSpecies, ..)
 {
     for (int i = 0; i < pSpecies.size(); i++) {
         if (pSpecies[i] != SPECIES_UNKNOWN)
-            mCurrentScore += (pSpecies[i] == mGuesses[i]);
+            mCurrentScore += ((pSpecies[i] == mGuesses[i]) * 2) - 1;
     }
 }
 ```

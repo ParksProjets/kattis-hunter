@@ -62,26 +62,27 @@
 Program DuckHunter;
 
 uses  // Standard libraries to import.
-    Classes, SysUtils;
+    Classes, SysUtils, Math;
 
 
 var  // Global variables.
     Args: TStrings;
     EnvIndex: integer;
+    CurrentScore: integer;
 
     RoundIndex, TurnIndex: integer;
     NumBirds: integer;
+
     BirdMoves: array[0..19] of integer;
+    GuessArray: array[0..19] of integer;
 
 
 const  // Global constants.
-    kEnvHashes: array[0..5] of uint64 = (0, 0, 0, 0, 0, 0);
+    {(TARGET SCORES)}
+    {(HASHES)}
 
-    kDirections: array[0..5, 0..9, 0..19] of integer = (
-        (  // Environment 1.
-            (0, 1, 5)
-        )
-    );
+    {(DIRECTIONS)}
+    {(SPECIES)}
 
 
 // Store new moves received from server.
@@ -102,7 +103,6 @@ begin
     for i := 0 to (NumBirds - 1) do
         BirdMoves[i] := StrToInt(Moves[i]);
     Moves.Free;
-    WriteLn(StdErr, 'Got bird moves');
 end;
 
 
@@ -122,8 +122,8 @@ var
     Hash: uint64;
 begin
     Hash := NumBirds;
-    for i := 0 to (NumBirds - 1) do
-        Hash := Hash or (BirdMoves[i] shl (i*4 + 5));
+    for i := 0 to Min(NumBirds - 1, 14) do
+        Hash := Hash or (UInt64(BirdMoves[i]) shl (i*4 + 5));
 
     for EnvIndex := 0 to 5 do
         if kEnvHashes[EnvIndex] = Hash then
@@ -137,8 +137,10 @@ Procedure ShootBird;
 begin
     TurnIndex := TurnIndex + 1;
 
-    if (RoundIndex = 0) and (TurnIndex = 0) then
+    if (RoundIndex = 0) and (TurnIndex = 0) then begin
         FindEnvironmentIndex;
+        WriteLn(StdErr, 'Environment: ', EnvIndex);
+    end;
 
     if (EnvIndex = -1) or (CurrentScore >= kTargetScores[EnvIndex]) or
        (TurnIndex >= NumBirds)
@@ -148,27 +150,60 @@ begin
         CurrentScore := CurrentScore - 1;
         WriteLn(TurnIndex, ' ', kDirections[EnvIndex, RoundIndex, TurnIndex]);
     end;
+
+    Flush(Output);
+end;
+
+
+// The server is telling us that we hit a bird.
+Procedure BirdWasHit;
+begin
+    CurrentScore := CurrentScore + 2;
 end;
 
 
 // Guess birds in current round.
 Procedure GuessBirds;
+var
+    i, L: integer;
 begin
+    for i := 0 to 19 do
+        GuessArray[i] := -1;
 
+    if EnvIndex <> -1 then begin
+        L := Min(NumBirds, kTargetScores[EnvIndex] - CurrentScore);
+        for i := 0 to (L - 1) do
+            GuessArray[i] := kSpecies[EnvIndex, RoundIndex, i];
+    end;
+
+    for i := 0 to (NumBirds - 1) do
+        Write(GuessArray[i], ' ');
+
+    WriteLn;
+    Flush(Output);
 end;
 
 
 // Check that guessed birds are correct.
 Procedure CheckRevealedBirds;
+var
+    i: integer;
 begin
-
+    for i := 0 to (NumBirds - 1) do
+    begin
+        if Args[i+1] <> '-1' then
+            if GuessArray[i] = StrToInt(Args[i+1]) then
+                CurrentScore := CurrentScore + 1
+            else
+                CurrentScore := CurrentScore - 1;
+    end;
 end;
 
 
-// Check that the tracked score is correct.
-Procedure CheckScore;
+// Show the score on STDERR.
+Procedure ShowScore;
 begin
-
+    WriteLn(StdErr, 'My score: ', Args[1]);
 end;
 
 
@@ -187,9 +222,10 @@ begin
         'MOVES':  StoreNewMove;
         'ROUND':  StartRound;
         'SHOOT':  ShootBird;
+        'HIT':    BirdWasHit;
         'GUESS':  GuessBirds;
         'REVEAL': CheckRevealedBirds;
-        'SCORE':  CheckScore;
+        'SCORE':  ShowScore;
     end;
     ProcessMessage := false;
 end;

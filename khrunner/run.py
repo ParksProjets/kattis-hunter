@@ -66,4 +66,5 @@ def runkh(config: Dict):
         ps.communicate(timeout=60)
         logger.info("Kattis Hunter stopped successfully.")
     except sp.TimeoutExpired:
+        ps.kill()
         logger.warning("Kattis Hunter was killed after timeout.")
