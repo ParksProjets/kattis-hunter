@@ -51,6 +51,10 @@ ANSWER_SHOOT = """
     if (turn > dirs.size())
         return cDontShoot;
 
+    auto &species = kAllSpecies[mEnvIndex][pState.getRound()];
+    if (species[turn - 1] == SPECIES_BLACK_STORK)
+        return cDontShoot;
+
     mCurrentScore -= 1;
     return Action(turn - 1, (EMovement)dirs[turn - 1]);
 """

@@ -16,6 +16,14 @@ from typing import Text, Dict
 from .codegen import codegen
 
 
+def error(msg: Text, *args):
+    "Stop the script on an error."
+
+    print("\n\033[31m\033[1m" + "ERROR - " + (msg % args) + "\033[0m\n")
+    sys.exit(1)
+
+
+
 def parse_scores(text: Text, cache: Dict):
     "Parse given scores."
 
@@ -23,14 +31,25 @@ def parse_scores(text: Text, cache: Dict):
     L = int(cache["problem"]["number-of-env"])
 
     if len(scores) != L:
-        print("You must give %d scores (comma separated).", L)
-        sys.exit(1)
+        error("You must give %d scores (comma separated).", L)
 
-    try:
-        return [int(s) for s in scores]
-    except ValueError:
-        print("Given scores are not numbers.")
-        sys.exit(1)
+    (result, offset) = ([], 0)
+    for i, s in enumerate(scores):
+        try:
+            num = int(s)
+        except ValueError:
+            error(f"Score {i+1} is not a number.")
+
+        same_as = cache["results"][i].get("same-as")
+        if same_as != None:
+            if num != result[same_as - offset]:
+                error(f"Environment {i+1} is the same as {same_as+1}, "
+                    "you must give it the same score.")
+            offset += 1
+        else:
+            result.append(num)
+
+    return result
 
 
 

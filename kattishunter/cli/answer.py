@@ -45,7 +45,7 @@ def parse_scores(text: Text, config: Dict):
     if len(scores) != L:
         logger.critical("You must give %d scores (comma separated).", L)
 
-    result = []
+    (result, offset) = ([], 0)
     for i, s in enumerate(scores):
         try:
             num = int(s)
@@ -54,9 +54,10 @@ def parse_scores(text: Text, config: Dict):
 
         same_as = config["results"][i].get("same-as")
         if same_as != None:
-            if num != result[same_as]:
+            if num != result[same_as - offset]:
                 logger.critical(f"Environment {i+1} is the same as {same_as+1}, "
                     "you must give it the same score.")
+            offset += 1
         else:
             result.append(num)
 

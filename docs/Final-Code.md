@@ -1,6 +1,5 @@
 ## Final code generation
 
-
 ## Bird directions, species and scores
 
 ```c++
@@ -50,6 +49,11 @@ Action Player::shoot(const GameState &pState, const Deadline &pDue)
     // We can't do anything in this turn.
     auto &dirs = kAllDirections[mEnvIndex][pState.getRound()];
     if (turn > dirs.size())
+        return cDontShoot;
+
+    // The bird is a black stork.
+    auto &species = kAllSpecies[mEnvIndex][pState.getRound()];
+    if (species[turn - 1] == SPECIES_BLACK_STORK)
         return cDontShoot;
 
     // Shoot a bird!

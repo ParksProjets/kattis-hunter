@@ -9,7 +9,7 @@
 PYTHON := python3
 FPC := fpc
 
-# COBOL configuration.
+# Pascal compiler configuration.
 PFLAGS += -O2 -XS -Xt
 
 # Object directory and target executable.
@@ -20,18 +20,21 @@ TARGET := answer
 BASESRC := base.pas
 TMPSRC := finalcode.pas
 
-# Cache file to use and target scores.
+# Cache file to use and default target scores.
 CACHE := ../cache.json
-SCORES := 23,10,0,0,0,0
+SCORES := 111,111,111,111,111,111
 
 
 # Compile all source files.
-.PHONY: all run clean
+.PHONY: all code run clean
 all: $(OBJDIR)/$(TARGET)
+
+# Generate only the Pascal code.
+code: $(OBJDIR)/$(TMPSRC)
 
 
 # Build the temporary source file.
-$(OBJDIR)/$(TMPSRC): $(BASESRC)
+$(OBJDIR)/$(TMPSRC): $(BASESRC) $(CACHE)
 	@mkdir -p $(OBJDIR)
 	$(PYTHON) khpascal $(SCORES) -c $(CACHE) -i $< -o $@
 

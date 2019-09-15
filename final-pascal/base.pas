@@ -48,7 +48,7 @@
 (*     error occurs. It is then possible to encode data from hidden tests in CPU time for     *)
 (*     extracting  them from Kattis. The CPU  time of a single execution only allows some     *)
 (*     few bits of information to be retrieved (about 10.5 at most), but by repeating the     *)
-(*     operation a large  number of times (about 500 times), all the  desired data can be     *)
+(*     operation a large  number of times (about 350 times), all the  desired data can be     *)
 (*     extracted.                                                                             *)
 (*                                                                                            *)
 (*     If you want to  have some more technical  details on how to recover data using CPU     *)
@@ -82,6 +82,7 @@ const  // Global constants.
     {(HASHES)}
 
     {(DIRECTIONS)}
+
     {(SPECIES)}
 
 
@@ -106,7 +107,7 @@ begin
 end;
 
 
-// The server is telling us that a nex round is starting.
+// The server is telling us that a new round is starting.
 Procedure StartRound;
 begin
     RoundIndex := StrToInt(Args[1]);
@@ -115,14 +116,14 @@ begin
 end;
 
 
-// Find the index of the current environment.
+// Find the index of the current environment using env hash.
 Procedure FindEnvironmentIndex;
 var
     i: integer;
     Hash: uint64;
 begin
     Hash := NumBirds;
-    for i := 0 to Min(NumBirds - 1, 14) do
+    for i := 0 to Min(NumBirds - 1, 13) do
         Hash := Hash or (UInt64(BirdMoves[i]) shl (i*4 + 5));
 
     for EnvIndex := 0 to 5 do
@@ -143,7 +144,8 @@ begin
     end;
 
     if (EnvIndex = -1) or (CurrentScore >= kTargetScores[EnvIndex]) or
-       (TurnIndex >= NumBirds)
+       (TurnIndex >= NumBirds) or
+       (kSpecies[EnvIndex, RoundIndex, TurnIndex] = 5)
     then
         WriteLn('-1 -1')
     else begin
@@ -184,7 +186,7 @@ begin
 end;
 
 
-// Check that guessed birds are correct.
+// Check that guessed birds are correct and update current score.
 Procedure CheckRevealedBirds;
 var
     i: integer;
@@ -226,6 +228,8 @@ begin
         'GUESS':  GuessBirds;
         'REVEAL': CheckRevealedBirds;
         'SCORE':  ShowScore;
+        'TIMEOUT':  exit;
+        'GAMEOVER': exit;
     end;
     ProcessMessage := false;
 end;
@@ -235,4 +239,5 @@ end;
 begin
     Args := TStringList.Create;
     repeat until ProcessMessage;
+    WriteLn(StdErr, 'Final score: ', CurrentScore);
 end.
